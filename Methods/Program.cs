@@ -11,22 +11,29 @@ namespace Methods
         {
             var mySinValues = new Dictionary<double, double>();
             var mathSinValues = new Dictionary<double, double>();
+            var errors = new Dictionary<double, double>();
 
-            for (double i = 0; i < 6.28; i += 0.1)
+            for (var x = -Math.PI; x < Math.PI; x += 0.001)
             {
-                mySinValues.Add(i, Sin(i));
-                mathSinValues.Add(i, Math.Sin(i));
+                var myVal = Sin(x);
+                var libVal = Math.Sin(x);
+
+                var error = (myVal / libVal) - 1;
+                
+                mySinValues.Add(x, myVal);
+                mathSinValues.Add(x, libVal);
+                errors.Add(x, error);
             }
             
             using (var stream = File.Create("../../../my_sin.csv"))
             {
                 using var writer = new StreamWriter(stream);
                 
-                writer.WriteLine("X;Y");
+                //writer.WriteLine("X;Y");
                 
                 foreach (var (key, value) in mySinValues)
                 {
-                    writer.WriteLine($"{key};{value}");
+                    writer.WriteLine($"{key.ToString(CultureInfo.InvariantCulture)};{value.ToString(CultureInfo.InvariantCulture)}");
                 }
             }
             
@@ -34,11 +41,23 @@ namespace Methods
             {
                 using var writer = new StreamWriter(stream);
                 
-                writer.WriteLine("X;Y");
+                //writer.WriteLine("X;Y");
                 
                 foreach (var (key, value) in mathSinValues)
                 {
-                    writer.WriteLine($"{key};{value}");
+                    writer.WriteLine($"{key.ToString(CultureInfo.InvariantCulture)};{value.ToString(CultureInfo.InvariantCulture)}");
+                }
+            }
+            
+            using (var stream = File.Create("../../../errors.csv"))
+            {
+                using var writer = new StreamWriter(stream);
+                
+                //writer.WriteLine("X;Y");
+                
+                foreach (var (key, value) in errors)
+                {
+                    writer.WriteLine($"{key.ToString(CultureInfo.InvariantCulture)};{value.ToString(CultureInfo.InvariantCulture)}");
                 }
             }
         }
